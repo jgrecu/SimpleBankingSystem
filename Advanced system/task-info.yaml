@@ -50,6 +50,11 @@ files:
 
         @DynamicTest
         CheckResult test1_checkDatabaseFile() {
+            try {
+                Files.deleteIfExists(Paths.get(tempDatabaseFileName));
+                Files.deleteIfExists(Paths.get(databaseFileName));
+            } catch (Exception ignored) {
+            }
 
             TestedProgram program = new TestedProgram();
             program.start(args);
@@ -566,8 +571,8 @@ files:
             connection = null;
         }
 
-        @BeforeClass
-        public static void createTempDatabase() throws IOException {
+        //@BeforeClass
+        public static void createTempDatabase() {
 
             closeConnection();
 
@@ -584,8 +589,8 @@ files:
             }
         }
 
-        @AfterClass
-        public static void deleteTempDatabase() throws IOException {
+        //@AfterClass
+        public static void deleteTempDatabase() {
 
             closeConnection();
 
