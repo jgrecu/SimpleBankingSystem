@@ -21,8 +21,18 @@ public class BankAccount {
     }
 
     private long generateAccountNumber() {
-        String substring = String.format("%09d", random.nextInt(1000000000));
-        return Long.parseLong(substring);
+        //String substring = String.format("%09d", random.nextInt(1000000000));
+        //return Long.parseLong(substring);
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 9; i++) {
+            int randomNum = random.nextInt(10);
+            while (i == 0 && randomNum == 0) {
+                randomNum = random.nextInt(10);
+            }
+            sb.append(randomNum);
+
+        }
+        return Long.parseLong(sb.toString());
     }
 
     public void withdraw(long amount) {

@@ -11,7 +11,7 @@ public class CreditCard {
 
     public CreditCard() {
         this.bankAccount = new BankAccount();
-        this.cardNumber = Integer.toString(BIN) + bankAccount.getAccountNumber() + 5;
+        this.cardNumber = generateCardNumber();
         this.cardPin = generateRandomPin();
     }
 
@@ -26,6 +26,31 @@ public class CreditCard {
 
         }
         return sb.toString();
+    }
+
+    private String generateCardNumber() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(BIN).append(bankAccount.getAccountNumber());
+        int checksum = calculateChecksum(sb.toString());
+        sb.append(checksum);
+        return sb.toString();
+    }
+
+    private int calculateChecksum(String cardNo) {
+        // using Luhn algorithm
+        int nDigits = cardNo.length();
+        int nSum = 0;
+        for (int i = 0; i < nDigits; i++) {
+            int d = cardNo.charAt(i) - '0';
+            if (i % 2 == 0) {
+                d *= 2;
+                nSum += d / 10;
+                nSum += d % 10;
+            } else {
+                nSum += d;
+            }
+        }
+        return nSum % 10 == 0 ? 0 : 10 - nSum % 10;
     }
 
     @Override

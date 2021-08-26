@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class TellerSystem {
+public class UserInterface {
     final List<CreditCard> creditCardList;
     final Scanner scanner = new Scanner(System.in);
 
-    public TellerSystem() {
+    public UserInterface() {
         this.creditCardList = new ArrayList<>();
     }
 
