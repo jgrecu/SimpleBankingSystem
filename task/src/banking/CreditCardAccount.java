@@ -5,16 +5,16 @@ import java.util.Random;
 public class CreditCardAccount {
     private final Random random = new Random();
     private final int BIN = 400000;
+    private String bankAccount;
     private String cardNumber;
     private String cardPin;
-    private String bankAccount;
     private long balance;
 
     public CreditCardAccount() {
         this.bankAccount = generateAccountNumber();
         this.cardNumber = generateCardNumber();
         this.cardPin = generateRandomPin();
-        this.balance = 0;
+        this.balance = 0L;
     }
 
     private String generateAccountNumber() {
