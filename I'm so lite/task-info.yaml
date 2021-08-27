@@ -490,6 +490,248 @@ files:
         }
     }
   learner_created: false
+- name: src/banking/UserInterface.java
+  visible: true
+  text: |
+    package banking;
+
+    import java.util.ArrayList;
+    import java.util.List;
+    import java.util.Scanner;
+
+    public class UserInterface {
+        final List<CreditCard> creditCardList;
+        final Scanner scanner = new Scanner(System.in);
+
+        public UserInterface() {
+            this.creditCardList = new ArrayList<>();
+        }
+
+        private void printMainMenu() {
+            System.out.println("1. Create an account\n" +
+                    "2. Log into account\n" +
+                    "0. Exit");
+        }
+
+        public void processMain() {
+            boolean noBreak = true;
+            while (noBreak) {
+                printMainMenu();
+                String choice = scanner.nextLine();
+                switch (choice) {
+                    case "1":
+                        addNewCard();
+                        break;
+                    case "2":
+                        processLogin();
+                        break;
+                    case "0":
+                        noBreak = false;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            System.out.println("\nBye!");
+        }
+
+        private void addNewCard() {
+            CreditCard card = new CreditCard();
+            creditCardList.add(card);
+            System.out.println("\nYour card has been created");
+            System.out.println(card.toString());
+        }
+
+        private void processLogin() {
+            System.out.println("\nEnter your card number:");
+            String creditCard = scanner.nextLine();
+            System.out.println("Enter your PIN:");
+            String pin = scanner.nextLine();
+
+            CreditCard userCard = checkCredentials(creditCard, pin);
+            if (userCard != null) {
+                processUser(userCard);
+            }
+        }
+
+        private CreditCard checkCredentials(String creditCard, String pin) {
+            for (CreditCard card : creditCardList) {
+                if (card.getCardNumber().equals(creditCard) && card.getCardPin().equals(pin)) {
+                    System.out.println("\nYou have successfully logged in!\n");
+                    return card;
+                }
+            }
+            System.out.println("\nWrong card number or PIN!\n");
+            return null;
+        }
+
+        private void processUser(CreditCard card) {
+            boolean noBreak = true;
+            while (noBreak) {
+                printLogMenu();
+                String choice = scanner.nextLine();
+                switch (choice) {
+                    case "1":
+                        System.out.println("\nBalance: " + card.getBalance() + "\n");
+                        break;
+                    case "2":
+                        System.out.println("\nYou have successfully logged out!\n");
+                        noBreak = false;
+                        break;
+                    case "0":
+                        noBreak = false;
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        private void printLogMenu() {
+            System.out.println("1. Balance\n" +
+                    "2. Log out\n" +
+                    "0. Exit");
+        }
+    }
+  learner_created: true
+- name: src/banking/BankAccount.java
+  visible: true
+  text: |
+    package banking;
+
+    import java.util.Random;
+
+    public class BankAccount {
+        private String name;
+        private long accountNumber;
+        private long balance;
+        private final Random random = new Random();
+
+        public BankAccount() {
+            this.name = " ";
+            this.balance = 0;
+            this.accountNumber = generateAccountNumber();
+        }
+
+        public BankAccount(long initialBalance, String name) {
+            this.balance = initialBalance;
+            this.name = name;
+            this.accountNumber = generateAccountNumber();
+        }
+
+        private long generateAccountNumber() {
+            //String substring = String.format("%09d", random.nextInt(1000000000));
+            //return Long.parseLong(substring);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 9; i++) {
+                int randomNum = random.nextInt(10);
+                while (i == 0 && randomNum == 0) {
+                    randomNum = random.nextInt(10);
+                }
+                sb.append(randomNum);
+
+            }
+            return Long.parseLong(sb.toString());
+        }
+
+        public void withdraw(long amount) {
+            if (amount <= balance) {
+                balance -= amount;
+            } else {
+                System.out.println("Insufficient funds");
+            }
+        }
+
+        public void deposit(long amount) {
+            balance += amount;
+        }
+
+        public long getBalance() {
+            return balance;
+        }
+
+        public long getAccountNumber() {
+            return accountNumber;
+        }
+    }
+  learner_created: true
+- name: src/banking/CreditCard.java
+  visible: true
+  text: |
+    package banking;
+
+    import java.util.Random;
+
+    public class CreditCard {
+        private String cardNumber;
+        private String cardPin;
+        private final int BIN = 400000;
+        private BankAccount bankAccount;
+        private final Random random = new Random();
+
+        public CreditCard() {
+            this.bankAccount = new BankAccount();
+            this.cardNumber = generateCardNumber();
+            this.cardPin = generateRandomPin();
+        }
+
+        private String generateRandomPin() {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 4; i++) {
+                int randomNum = random.nextInt(10);
+                while (i == 0 && randomNum == 0) {
+                    randomNum = random.nextInt(10);
+                }
+                sb.append(randomNum);
+
+            }
+            return sb.toString();
+        }
+
+        private String generateCardNumber() {
+            StringBuilder sb = new StringBuilder();
+            sb.append(BIN).append(bankAccount.getAccountNumber());
+            int checksum = calculateChecksum(sb.toString());
+            sb.append(checksum);
+            return sb.toString();
+        }
+
+        private int calculateChecksum(String cardNo) {
+            // using Luhn algorithm
+            int nDigits = cardNo.length();
+            int nSum = 0;
+            for (int i = 0; i < nDigits; i++) {
+                int d = cardNo.charAt(i) - '0';
+                if (i % 2 == 0) {
+                    d *= 2;
+                    nSum += d / 10;
+                    nSum += d % 10;
+                } else {
+                    nSum += d;
+                }
+            }
+            return nSum % 10 == 0 ? 0 : 10 - nSum % 10;
+        }
+
+        @Override
+        public String toString() {
+            return "Your card number:\n" + this.cardNumber + "\n" +
+                    "Your card PIN:\n" + this.cardPin + "\n";
+        }
+
+        public String getCardPin() {
+            return cardPin;
+        }
+
+        public String getCardNumber() {
+            return cardNumber;
+        }
+
+        public long getBalance() {
+            return bankAccount.getBalance();
+        }
+    }
+  learner_created: true
 feedback_link: https://hyperskill.org/projects/93/stages/517/implement#comment
 status: Unchecked
 record: -1
