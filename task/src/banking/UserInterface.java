@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Scanner;
 
 public class UserInterface {
-    final List<CreditCard> creditCardList;
+    final List<CreditCardAccount> creditCardAccountList;
     final Scanner scanner = new Scanner(System.in);
 
     public UserInterface() {
-        this.creditCardList = new ArrayList<>();
+        this.creditCardAccountList = new ArrayList<>();
     }
 
     private void printMainMenu() {
@@ -41,10 +41,10 @@ public class UserInterface {
     }
 
     private void addNewCard() {
-        CreditCard card = new CreditCard();
-        creditCardList.add(card);
+        CreditCardAccount card = new CreditCardAccount();
+        creditCardAccountList.add(card);
         System.out.println("\nYour card has been created");
-        System.out.println(card.toString());
+        System.out.println(card);
     }
 
     private void processLogin() {
@@ -53,14 +53,14 @@ public class UserInterface {
         System.out.println("Enter your PIN:");
         String pin = scanner.nextLine();
 
-        CreditCard userCard = checkCredentials(creditCard, pin);
+        CreditCardAccount userCard = checkCredentials(creditCard, pin);
         if (userCard != null) {
             processUser(userCard);
         }
     }
 
-    private CreditCard checkCredentials(String creditCard, String pin) {
-        for (CreditCard card : creditCardList) {
+    private CreditCardAccount checkCredentials(String creditCard, String pin) {
+        for (CreditCardAccount card : creditCardAccountList) {
             if (card.getCardNumber().equals(creditCard) && card.getCardPin().equals(pin)) {
                 System.out.println("\nYou have successfully logged in!\n");
                 return card;
@@ -70,7 +70,7 @@ public class UserInterface {
         return null;
     }
 
-    private void processUser(CreditCard card) {
+    private void processUser(CreditCardAccount card) {
         boolean noBreak = true;
         while (noBreak) {
             printLogMenu();

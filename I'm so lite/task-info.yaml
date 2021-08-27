@@ -655,7 +655,7 @@ files:
         }
     }
   learner_created: true
-- name: src/banking/CreditCard.java
+- name: src/banking/CreditCardAccount.java
   visible: true
   text: |
     package banking;

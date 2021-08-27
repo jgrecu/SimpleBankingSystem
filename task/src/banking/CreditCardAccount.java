@@ -2,17 +2,30 @@ package banking;
 
 import java.util.Random;
 
-public class CreditCard {
+public class CreditCardAccount {
+    private final Random random = new Random();
+    private final int BIN = 400000;
     private String cardNumber;
     private String cardPin;
-    private final int BIN = 400000;
-    private BankAccount bankAccount;
-    private final Random random = new Random();
+    private String bankAccount;
+    private long balance;
 
-    public CreditCard() {
-        this.bankAccount = new BankAccount();
+    public CreditCardAccount() {
+        this.bankAccount = generateAccountNumber();
         this.cardNumber = generateCardNumber();
         this.cardPin = generateRandomPin();
+        this.balance = 0;
+    }
+
+    private String generateAccountNumber() {
+        //return String.format("%09d", random.nextInt(1000000000));
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 9; i++) {
+            int randomNum = random.nextInt(10);
+            sb.append(randomNum);
+
+        }
+        return sb.toString();
     }
 
     private String generateRandomPin() {
@@ -30,7 +43,7 @@ public class CreditCard {
 
     private String generateCardNumber() {
         StringBuilder sb = new StringBuilder();
-        sb.append(BIN).append(bankAccount.getAccountNumber());
+        sb.append(BIN).append(bankAccount);
         int checksum = calculateChecksum(sb.toString());
         sb.append(checksum);
         return sb.toString();
@@ -67,7 +80,19 @@ public class CreditCard {
         return cardNumber;
     }
 
+    public void withdraw(long amount) {
+        if (amount <= balance) {
+            balance -= amount;
+        } else {
+            System.out.println("Insufficient funds");
+        }
+    }
+
+    public void deposit(long amount) {
+        balance += amount;
+    }
+
     public long getBalance() {
-        return bankAccount.getBalance();
+        return balance;
     }
 }
