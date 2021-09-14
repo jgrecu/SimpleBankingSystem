@@ -79,20 +79,4 @@ public class CreditCardAccount {
     public String getCardNumber() {
         return cardNumber;
     }
-
-    public void withdraw(long amount) {
-        if (amount <= balance) {
-            balance -= amount;
-        } else {
-            System.out.println("Insufficient funds");
-        }
-    }
-
-    public void deposit(long amount) {
-        balance += amount;
-    }
-
-    public long getBalance() {
-        return balance;
-    }
 }

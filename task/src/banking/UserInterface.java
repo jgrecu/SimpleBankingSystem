@@ -1,6 +1,5 @@
 package banking;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -48,11 +47,7 @@ public class UserInterface {
     private void addNewCard() {
         CreditCardAccount card = new CreditCardAccount();
         //creditCardAccountList.add(card);
-        try {
-            dbCon.addCard(card.getCardNumber(), card.getCardPin());
-        } catch (SQLException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        dbCon.addCard(card.getCardNumber(), card.getCardPin());
         System.out.println("\nYour card has been created");
         System.out.println(card);
     }
@@ -63,31 +58,59 @@ public class UserInterface {
         System.out.println("Enter your PIN:");
         String pin = scanner.nextLine();
 
-        CreditCardAccount userCard = checkCredentials(creditCard, pin);
-        if (userCard != null) {
-            processUser(userCard);
+//        CreditCardAccount userCard = checkCredentials(creditCard, pin);
+//        if (userCard != null) {
+//            processUser(userCard);
+//        }
+        boolean validCard = dbCon.checkCredentials(creditCard, pin);
+        if (validCard) {
+            System.out.println("\nYou have successfully logged in!\n");
+            processUser(creditCard);
+        } else {
+            System.out.println("\nWrong card number or PIN!\n");
         }
     }
 
-    private CreditCardAccount checkCredentials(String creditCard, String pin) {
-        for (CreditCardAccount card : creditCardAccountList) {
-            if (card.getCardNumber().equals(creditCard) && card.getCardPin().equals(pin)) {
-                System.out.println("\nYou have successfully logged in!\n");
-                return card;
-            }
-        }
-        System.out.println("\nWrong card number or PIN!\n");
-        return null;
-    }
+//    private CreditCardAccount checkCredentials(String creditCard, String pin) {
+//        for (CreditCardAccount card : creditCardAccountList) {
+//            if (card.getCardNumber().equals(creditCard) && card.getCardPin().equals(pin)) {
+//                System.out.println("\nYou have successfully logged in!\n");
+//                return card;
+//            }
+//        }
+//        System.out.println("\nWrong card number or PIN!\n");
+//        return null;
+//    }
 
-    private void processUser(CreditCardAccount card) {
+//    private void processUser(CreditCardAccount card) {
+//        boolean noBreak = true;
+//        while (noBreak) {
+//            printLogMenu();
+//            String choice = scanner.nextLine();
+//            switch (choice) {
+//                case "1":
+//                    System.out.println("\nBalance: " + card.getBalance() + "\n");
+//                    break;
+//                case "2":
+//                    System.out.println("\nYou have successfully logged out!\n");
+//                    noBreak = false;
+//                    break;
+//                case "0":
+//                    noBreak = false;
+//                    break;
+//                default:
+//                    break;
+//            }
+//        }
+//    }
+    private void processUser(String creditCard) {
         boolean noBreak = true;
         while (noBreak) {
             printLogMenu();
             String choice = scanner.nextLine();
             switch (choice) {
                 case "1":
-                    System.out.println("\nBalance: " + card.getBalance() + "\n");
+                    System.out.println("\nBalance: " + dbCon.getBalance(creditCard) + "\n");
                     break;
                 case "2":
                     System.out.println("\nYou have successfully logged out!\n");
@@ -95,6 +118,8 @@ public class UserInterface {
                     break;
                 case "0":
                     noBreak = false;
+                    System.out.println("\nBye!");
+                    System.exit(1);
                     break;
                 default:
                     break;
