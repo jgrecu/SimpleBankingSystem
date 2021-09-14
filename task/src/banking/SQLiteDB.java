@@ -5,7 +5,7 @@ import java.sql.*;
 public class SQLiteDB {
 
         private final String JDPC_URL;
-        private static boolean hasData = false;
+        private boolean hasData = false;
 
         public SQLiteDB(String dbFile) {
                 this.JDPC_URL = "jdbc:sqlite:" + dbFile;
@@ -16,7 +16,6 @@ public class SQLiteDB {
                 Connection connection = null;
                 try {
                         connection = DriverManager.getConnection(JDPC_URL);
-//                        initialize();
                 } catch (SQLException e) {
                         System.out.println(e.getMessage());
                 }
@@ -32,13 +31,14 @@ public class SQLiteDB {
                                 try (ResultSet resultSet = statement.executeQuery(
                                         "SELECT name FROM sqlite_master WHERE type='table' AND name='card'")) {
                                         if (!resultSet.next()) {
-                                                Statement statement2 = connection.createStatement();
-                                                statement2.execute("CREATE TABLE IF NOT EXISTS card (" +
-                                                        "id INTEGER PRIMARY KEY," +
-                                                        "number TEXT NOT NULL," +
-                                                        "pin TEXT NOT NULL," +
-                                                        "balance INTEGER DEFAULT 0" +
-                                                        ");");
+                                                try (Statement statement2 = connection.createStatement()) {
+                                                        statement2.execute("CREATE TABLE IF NOT EXISTS card (" +
+                                                                "id INTEGER PRIMARY KEY," +
+                                                                "number TEXT NOT NULL," +
+                                                                "pin TEXT NOT NULL," +
+                                                                "balance INTEGER DEFAULT 0" +
+                                                                ");");
+                                                }
                                         }
                                 }
                         } catch (SQLException e) {

@@ -4,21 +4,19 @@ import java.util.Random;
 
 public class CreditCardAccount {
     private final Random random = new Random();
-    private final int BIN = 400000;
+    private final static int BIN = 400000;
     private String bankAccount;
     private String cardNumber;
     private String cardPin;
-    private long balance;
+
 
     public CreditCardAccount() {
         this.bankAccount = generateAccountNumber();
         this.cardNumber = generateCardNumber();
         this.cardPin = generateRandomPin();
-        this.balance = 0L;
     }
 
     private String generateAccountNumber() {
-        //return String.format("%09d", random.nextInt(1000000000));
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < 9; i++) {
             int randomNum = random.nextInt(10);
