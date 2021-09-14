@@ -1,5 +1,6 @@
 package banking;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -7,9 +8,13 @@ import java.util.Scanner;
 public class UserInterface {
     final List<CreditCardAccount> creditCardAccountList;
     final Scanner scanner = new Scanner(System.in);
+    final String dbFile;
+    final SQLiteDB dbCon;
 
-    public UserInterface() {
+    public UserInterface(String dbFile) {
+        this.dbFile = dbFile;
         this.creditCardAccountList = new ArrayList<>();
+        this.dbCon = new SQLiteDB(dbFile);
     }
 
     private void printMainMenu() {
@@ -42,7 +47,12 @@ public class UserInterface {
 
     private void addNewCard() {
         CreditCardAccount card = new CreditCardAccount();
-        creditCardAccountList.add(card);
+        //creditCardAccountList.add(card);
+        try {
+            dbCon.addCard(card.getCardNumber(), card.getCardPin());
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         System.out.println("\nYour card has been created");
         System.out.println(card);
     }
