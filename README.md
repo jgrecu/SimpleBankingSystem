@@ -5,7 +5,7 @@ Everything goes digital these days, and so does money. Today, most people have c
 In this project, you will find out how the banking system works and learn about SQL. We'll also see how Luhn algorithm can help us avoid mistakes when entering the card number. As an overall result, you'll get new experience in Java.
 
 ### Menu
-1. Create an account
+```1. Create an account
 2. Log into account
   1. Balance
   2. Add income
@@ -14,3 +14,4 @@ In this project, you will find out how the banking system works and learn about 
   5. Log out
   0. Exit
 3. Exit
+```
