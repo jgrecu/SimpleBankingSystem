@@ -75,6 +75,49 @@ public class SQLiteDB {
                 return -1;
         }
 
+        public boolean addBalance(String cardNumber, String sum) {
+                String sql = "UPDATE card SET balance = balance + ? WHERE number = ?";
+                try (Connection connection = this.connect()) {
+                     try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                             pstmt.setString(1, sum);
+                             pstmt.setString(2, cardNumber);
+                             pstmt.executeUpdate();
+                             return true;
+                     }
+                } catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                }
+                return false;
+        }
+
+        public boolean transferAmount(String cardNumber1, String cardNumber2, String sum) {
+                String removeAmount = "UPDATE card SET balance = balance - ? WHERE number = ?";
+                String addAmount = "UPDATE card SET balance = balance + ? WHERE number = ?";
+                try (Connection connection = this.connect()) {
+                        // Disable auto-commit mode
+                        connection.setAutoCommit(false);
+
+                     try (PreparedStatement pstmt1 = connection.prepareStatement(removeAmount);
+                          PreparedStatement pstmt2 = connection.prepareStatement(addAmount)) {
+                             // Remove the amount from sender's account
+                             pstmt1.setString(1, sum);
+                             pstmt1.setString(2, cardNumber1);
+                             pstmt1.executeUpdate();
+
+                             // Add the amount to receiver's account
+                             pstmt2.setString(1, sum);
+                             pstmt2.setString(2, cardNumber2);
+                             pstmt2.executeUpdate();
+
+                             connection.commit();
+                             return true;
+                     }
+                } catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                }
+                return false;
+        }
+
         public boolean checkCredentials(String cardNumber, String pin) {
                 String sql = "SELECT number, pin FROM card WHERE number=? AND pin=?";
                 try (Connection connection = this.connect();
@@ -85,6 +128,36 @@ public class SQLiteDB {
                                 if (resultSet.next()) {
                                         return true;
                                 }
+                        }
+                } catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                }
+                return false;
+        }
+
+        public boolean checkCardExists(String cardNumber) {
+                String sql = "SELECT number, pin FROM card WHERE number=?";
+                try (Connection connection = this.connect();
+                     PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                        pstmt.setString(1, cardNumber);
+                        try (ResultSet resultSet = pstmt.executeQuery()) {
+                                if (resultSet.next()) {
+                                        return true;
+                                }
+                        }
+                } catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                }
+                return false;
+        }
+
+        public boolean closeAccount(String creditCard) {
+                String sql = "DELETE FROM card WHERE number = ?";
+                try (Connection connection = this.connect()) {
+                        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                                pstmt.setString(1, creditCard);
+                                pstmt.executeUpdate();
+                                return true;
                         }
                 } catch (SQLException e) {
                         System.out.println(e.getMessage());

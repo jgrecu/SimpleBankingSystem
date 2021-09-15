@@ -64,7 +64,7 @@ public class CreditCardAccount {
         return nSum % 10 == 0 ? 0 : 10 - nSum % 10;
     }
 
-    private boolean validateCreditCard(String cardNum) {
+    public static boolean validateCreditCard(String cardNum) {
         // using Luhn algorithm
         int nDigits = cardNum.length();
         int nSum = 0;
