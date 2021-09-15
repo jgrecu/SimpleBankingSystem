@@ -66,13 +66,13 @@ public class UserInterface {
     private void processUser(String creditCard) {
         boolean noBreak = true;
         while (noBreak) {
-            printLogMenu();
+            printUserMenu();
             String choice = scanner.nextLine();
             switch (choice) {
                 case "1":
                     System.out.println("\nBalance: " + dbCon.getBalance(creditCard) + "\n");
                     break;
-                case "2":
+                case "5":
                     System.out.println("\nYou have successfully logged out!\n");
                     noBreak = false;
                     break;
@@ -87,9 +87,12 @@ public class UserInterface {
         }
     }
 
-    private void printLogMenu() {
+    private void printUserMenu() {
         System.out.println("1. Balance\n" +
-                "2. Log out\n" +
+                "2. Add income\n" +
+                "3. Do transfer\n" +
+                "4. Close account\n" +
+                "5. Log out\n" +
                 "0. Exit");
     }
 }
